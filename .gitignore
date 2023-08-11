@@ -130,6 +130,7 @@ dmypy.json
 
 # video
 *.avi
+video/NVR-1.mp4
 
 # my_weights
 weights/crowdhuman_yolov5m.pt
