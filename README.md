@@ -83,7 +83,6 @@ bilibili
     python main.py
     ```
 
-
 ## 使用框架
 
 - https://github.com/Sharpiless/Yolov5-deepsort-inference
