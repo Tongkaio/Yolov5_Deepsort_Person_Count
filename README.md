@@ -82,7 +82,7 @@ bilibili
     ```
     python main.py
     ```
-
+10. main_modify.py 用于行人过闸机计数
 ## 使用框架
 
 - https://github.com/Sharpiless/Yolov5-deepsort-inference
