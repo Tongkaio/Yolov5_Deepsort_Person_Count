@@ -1,11 +1,13 @@
 import numpy as np
-
+import os
 import tracker
 from detector import Detector
 import cv2
 
-offset = 0.2
 if __name__ == '__main__':
+    # 撞线检测点偏移量
+    offset = 0.2
+
     # 根据视频尺寸，填充一个polygon，供撞线计算使用
     mask_image_temp = np.zeros((1080, 1920), dtype=np.uint8)  # 1080行，1920列，数据类型np.uint8
 
@@ -63,13 +65,15 @@ if __name__ == '__main__':
     detector = Detector()
 
     # 打开视频
-    capture = cv2.VideoCapture('./video/NVR-1.mp4')  # 这里填入视频的本地位置
+    video_name = 'NVR-1.mp4'
+    capture = cv2.VideoCapture(os.path.join('./video', video_name))  # 这里填入视频的本地位置
     # capture = cv2.VideoCapture('/mnt/datasets/datasets/towncentre/TownCentreXVID.avi')
 
     # 保存视频用的参数
     fps = int(capture.get(cv2.CAP_PROP_FPS))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    writer = cv2.VideoWriter('output.avi', fourcc, fps, (960, 540), True)
+    output_name = video_name.split('.')[0] + '_output.avi'
+    writer = cv2.VideoWriter(os.path.join('./output', output_name), fourcc, fps, (960, 540), True)
 
     while True:
         # 读取每帧图片
