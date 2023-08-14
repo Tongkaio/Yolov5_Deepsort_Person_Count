@@ -14,7 +14,7 @@ class Detector:
         self.threshold = 0.3
         self.stride = 1
 
-        self.weights = 'weights/crowdhuman_yolov5m.pt'
+        self.weights = 'weights/yolov5m.pt'
 
         self.device = '0' if torch.cuda.is_available() else 'cpu'
         self.device = select_device(self.device)
