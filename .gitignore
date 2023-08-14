@@ -133,5 +133,9 @@ dmypy.json
 video/NVR-1.mp4
 video/1.mp4
 video/2.mp4
+
 # my_weights
 weights/crowdhuman_yolov5m.pt
+
+# mydir
+output_guowang/
