@@ -25,7 +25,7 @@ def draw_bboxes(image, bboxes, line_thickness, offset=0.6):
         color = (0, 255, 0)
 
         # 撞线的点
-        check_point_x = x1
+        check_point_x = x2  # x1 左侧 x2 右侧
         check_point_y = int(y1 + ((y2 - y1) * offset))  # 同步修改
 
         c1, c2 = (x1, y1), (x2, y2)

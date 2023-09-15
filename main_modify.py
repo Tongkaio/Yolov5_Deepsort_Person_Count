@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # 初始化2个撞线polygon
     # 填充第一个polygon
-    list_pts_blue = [[0, 500], [1920, 500], [1920, 540], [0, 540]]  # 列表类型
+    list_pts_blue = [[1, 796], [1919, 796], [1919, 815], [1, 815]]  # 列表类型
     ndarray_pts_blue = np.array(list_pts_blue, np.int32)  # 转换为numpy
     # cv2.fillPoly(image, [多边形顶点array1, 多边形顶点array2, … ], RGB color)
     polygon_blue_value_1 = cv2.fillPoly(mask_image_temp, [ndarray_pts_blue], color=1)  # shape 1080*1920
@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     # 填充第二个polygon
     mask_image_temp = np.zeros((1080, 1920), dtype=np.uint8)
-    list_pts_yellow = [[0, 620], [1920, 620], [1920, 660], [0, 660]]
+    list_pts_yellow = [[1, 851], [1919, 851], [1919, 866], [1, 866]]
     ndarray_pts_yellow = np.array(list_pts_yellow, np.int32)
     polygon_yellow_value_2 = cv2.fillPoly(mask_image_temp, [ndarray_pts_yellow], color=2)
     polygon_yellow_value_2 = polygon_yellow_value_2[:, :, np.newaxis]
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     detector = Detector()
 
     # 打开视频
-    video_name = 'NVR-1.mp4'
+    video_name = 'NVR-1_1_Trim.avi'
     capture = cv2.VideoCapture(os.path.join('./video', video_name))  # 这里填入视频的本地位置
     # capture = cv2.VideoCapture('/mnt/datasets/datasets/towncentre/TownCentreXVID.avi')
 
