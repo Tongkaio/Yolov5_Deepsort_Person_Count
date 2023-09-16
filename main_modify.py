@@ -74,13 +74,11 @@ if __name__ == '__main__':
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     output_name = video_name.split('.')[0] + '_output.avi'
     writer = cv2.VideoWriter(os.path.join('./output', output_name), fourcc, fps, (960, 540), True)
-
     while True:
         # 读取每帧图片
         _, im = capture.read()  # 当视频帧读取完毕时，read() 方法会返回 (False, None)。
         if im is None:
             break
-
         # 缩小尺寸，1920x1080->960x540
         im = cv2.resize(im, (960, 540))
 
@@ -115,7 +113,7 @@ if __name__ == '__main__':
 
                 # 撞线的点
                 y = y1_offset
-                x = x1
+                x = x2
 
                 if polygon_mask_blue_and_yellow[y, x] == 1:  # 如果点在蓝色撞线区域内（上方）
                     # 如果撞 蓝polygon
@@ -133,7 +131,8 @@ if __name__ == '__main__':
 
                         # 删除 黄polygon list 中的此id
                         list_overlapping_yellow_polygon.remove(track_id)
-
+                        if track_id in list_overlapping_blue_polygon:  # 如果蓝线有此ID，因为已经判断完毕，清除它
+                            list_overlapping_blue_polygon.remove(track_id)
                         pass
                     else:
                         # 无此 track_id，不做其他操作
@@ -155,6 +154,8 @@ if __name__ == '__main__':
 
                         # 删除 蓝polygon list 中的此id
                         list_overlapping_blue_polygon.remove(track_id)
+                        if track_id in list_overlapping_yellow_polygon:  # 如果黄线有此ID，因为已经判断完毕，清除它
+                            list_overlapping_yellow_polygon.remove(track_id)
 
                         pass
                     else:
