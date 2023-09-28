@@ -95,12 +95,13 @@ bilibili
 sudo su
 ```
 ## 构建镜像
+Dockerfile在Docker文件夹下，进入该文件夹然后：
 ```shell
-docker build -t tongkai2023/yolov5_deepsort:1.3
+docker build -t tongkai2023/yolov5_deepsort:latest
 ```
 或者从 dockerhub 拉取：
 ```shell
-docker pull tongkai2023/yolov5_deepsort:1.3
+docker pull tongkai2023/yolov5_deepsort:latest
 ```
 ## 运行镜像
 1、打开x服务器访问控制：
@@ -120,7 +121,7 @@ docker run -it \
 -v [人员计数代码根目录]:/home/yolo_deepsort \
 -p "8888:8888" \
 --rm \
-tongkai/yolov5_deepsort:1.3 \
+tongkai/yolov5_deepsort:latest \
 bash
 ```
 参数说明：
