@@ -88,3 +88,56 @@ bilibili
 - https://github.com/Sharpiless/Yolov5-deepsort-inference
 - https://github.com/ultralytics/yolov5/
 - https://github.com/ZQPei/deep_sort_pytorch
+
+# 构建和运行镜像
+构建和运行镜像前先获取 root 权限：
+```shell
+sudo su
+```
+## 构建镜像
+Dockerfile在Docker文件夹下，进入该文件夹然后：
+```shell
+docker build -t tongkai2023/yolov5_deepsort:latest
+```
+或者从 dockerhub 拉取：
+```shell
+docker pull tongkai2023/yolov5_deepsort:latest
+```
+## 运行镜像
+1、打开x服务器访问控制：
+```shell
+xhost +
+```
+2、**创建并运行**容器，需要把下面命令中的`[人员计数代码根目录]`，换成主机里的人员计数代码的根目录，例如：/home/seu/tongkai/yolo_deepsort/unbox_yolov5_deepsort_counting_20230916，注意此路径中不含中文或者空格：
+```shell
+docker run -it \
+--ipc=host \
+--env="DISPLAY" \
+--gpus=all \
+-e PYTHONUNBUFFERED=1 \
+-e QT_X11_NO_MITSHM=1 \
+-e PYTHONIOENCODING=utf-8 \
+--mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix \
+-v [人员计数代码根目录]:/home/yolo_deepsort \
+-p "8888:8888" \
+--rm \
+tongkai/yolov5_deepsort:latest \
+bash
+```
+参数说明：
+1. 用于显示图形界面的参数：
+	- `--ipc=host`：将容器的IPC命名空间设置为与主机共享，这允许容器与主机上的进程进行IPC通信。
+	- `--env="DISPLAY"`：设置容器中的图形应用程序将其图形界面显示到主机上的X服务器。
+	- `-e QT_X11_NO_MITSHM=1`：用于解决容器向主机发送图形界面时的某些bug。
+	- `--mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix`创建了一个挂载点，将主机的`/tmp/.X11-unix`目录绑定到容器内的`/tmp/.X11-unix`目录。这是为了允许容器中的图形应用程序与主机上的X11服务器进行通信。
+2. 其他参数：
+	- `--gpus=all`：允许容器访问所有的GPU资源。这要求主机上已经安装了NVIDIA的GPU驱动和Docker GPU支持。
+	- `-e PYTHONUNBUFFERED=1`，解决代码print中文时的某些bug。
+	- `-v [人员计数代码根目录]:/home/yolo_deepsort`：将主机的代码目录挂载到容器内的`/home/yolo_deepsort`下。
+	- `-p "8888:8888"`：指定容器的端口。
+	- `--rm`：此容器退出后会被自动删除。
+
+3、运行代码：
+```shell
+python main.py
+```
