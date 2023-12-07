@@ -1,3 +1,7 @@
+"""
+    x86平台使用这套代码。
+"""
+
 import numpy as np
 import os
 import tracker

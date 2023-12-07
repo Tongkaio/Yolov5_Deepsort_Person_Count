@@ -1,114 +1,63 @@
-# yolov5 deepsort 行人 车辆 跟踪 检测 计数
-outside分支，入口外部检测
-- 实现了 出/入 分别计数。
-- 显示检测类别。
-- 默认是 南/北 方向检测，若要检测不同位置和方向，可在 main.py 文件第13行和21行，修改2个polygon的点。
-- 默认检测类别：行人、自行车、小汽车、摩托车、公交车、卡车。
-- 检测类别可在 detector.py 文件第60行修改。
+# Yolov5 DeepSORT 实现地铁口闸机计数
 
+![Pasted image 20230718172020](assets/Pasted-image-20230718172020.png)
 
-### 视频
+> 原仓库链接：https://github.com/dyh/unbox_yolov5_deepsort_counting
 
-bilibili
+# 一、环境配置
 
-[![bilibili](https://github.com/dyh/unbox_yolov5_deepsort_counting/blob/main/cover.jpg?raw=true)](https://www.bilibili.com/video/BV14z4y127XX/ "bilibili")
+建议使用 Anaconda 虚拟环境：
 
+```shell
+conda create -n yolo_deepsort python=3.8 
+conda activate yolo_deepsort
+```
 
-## 运行环境
+安装相关依赖：
 
-- python 3.6+，pip 20+
-- pytorch
-- pip install -r requirements.txt
+```shell
+# pytorch(实测1.10.2也可以)
+pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio===0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
 
+# 安装依赖包
+pip install -r requirements.txt
+```
 
-## 如何运行
+# 二、运行说明
 
-1. 下载代码
+1. main_modify.py 用于 x86 平台的闸机人员计数
+2. main_on_xavier.py 用于 Xavier (arm) 平台的闸机人员计数
 
-    ```
-    $ git clone https://github.com/dyh/unbox_yolov5_deepsort_counting.git
-    ```
-   
-   > 因此repo包含weights及mp4等文件，若 git clone 速度慢，可直接下载zip文件：https://github.com/dyh/unbox_yolov5_deepsort_counting/archive/main.zip
-   
-2. 进入目录
+# 三、在 x86 平台构建和运行镜像
 
-    ```
-    $ cd unbox_yolov5_deepsort_counting
-    ```
+x86 平台可以使用镜像部署。
 
-3. 创建 python 虚拟环境
+## 3.1 准备工作
 
-    ```
-    $ python3 -m venv venv
-    ```
-
-4. 激活虚拟环境
-
-    ```
-    $ source venv/bin/activate
-    ```
-   
-5. 升级pip
-
-    ```
-    $ python -m pip install --upgrade pip
-    ```
-
-6. 安装pytorch
-
-    > 根据你的操作系统、安装工具以及CUDA版本，在 https://pytorch.org/get-started/locally/ 找到对应的安装命令。我的环境是 ubuntu 18.04.5、pip、CUDA 11.0。
-
-    ```
-    $ pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio===0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
-    ```
-   
-7. 安装软件包
-
-    ```
-    $ pip install -r requirements.txt
-    ```
-
-8. 在 main.py 文件中第66行，设置要检测的视频文件路径，默认为 './video/test.mp4'
-
-    > 140MB的测试视频可以在这里下载：https://pan.baidu.com/s/1qHNGGpX1QD6zHyNTqWvg1w 提取码: 8ufq 
- 
-    ```
-    capture = cv2.VideoCapture('./video/test.mp4')
-    ```
-   
-9. 运行程序
-
-    ```
-    python main.py
-    ```
-10. main_modify.py 用于行人过闸机计数
-## 使用框架
-
-- https://github.com/Sharpiless/Yolov5-deepsort-inference
-- https://github.com/ultralytics/yolov5/
-- https://github.com/ZQPei/deep_sort_pytorch
-
-# 构建和运行镜像
 构建和运行镜像前先获取 root 权限：
+
 ```shell
 sudo su
 ```
-## 构建镜像
+## 3.2 构建镜像
+
 Dockerfile在Docker文件夹下，进入该文件夹然后：
 ```shell
 docker build -t tongkai2023/yolov5_deepsort:latest
 ```
-或者从 dockerhub 拉取：
+或者从 dockerhub 拉取构建好的镜像：
 ```shell
 docker pull tongkai2023/yolov5_deepsort:latest
 ```
-## 运行镜像
+## 3.3 运行镜像
+
 1、打开x服务器访问控制：
+
 ```shell
 xhost +
 ```
-2、**创建并运行**容器，需要把下面命令中的`[人员计数代码根目录]`，换成主机里的人员计数代码的根目录，例如：/home/seu/tongkai/yolo_deepsort/unbox_yolov5_deepsort_counting_20230916，注意此路径中不含中文或者空格：
+2、**创建并运行**容器，需要把下面命令中的`[人员计数代码根目录]`，换成主机里的人员计数代码的根目录，例如：/home/seu/tongkai/yolo_deepsort/unbox_yolov5_deepsort_counting，注意此路径中不得含中文或者空格：
+
 ```shell
 docker run -it \
 --ipc=host \
@@ -137,7 +86,29 @@ bash
 	- `-p "8888:8888"`：指定容器的端口。
 	- `--rm`：此容器退出后会被自动删除。
 
-3、运行代码：
+3、运行代码进行测试：
+
 ```shell
-python main.py
+python main_modify.py
 ```
+
+# 四、Arm 平台的部署说明
+
+AGX的CPU(armv8)处理速度慢，出现卡死，解决方法是，修改接收rtsp流的线程代码为：
+```python
+def Receive():
+    print("start Reveive")
+    cap = cv2.VideoCapture("your/rtsp/path")
+    ret, frame = cap.read()
+    q.put(frame)
+    while ret:
+        ret, frame = cap.read()
+        if frame is not None and q.qsize() < 3:  # q是queue.Queue(maxsize=3)，如果队列长度小于三，说明另一个线程读取完毕
+            q.put(frame)
+        else:
+            time.sleep(0.01)
+```
+
+其中主要修改了判断条件，`if frame is not None and q.qsize() < 3` 里的 `q.qsize() < 3`，以确保另一个处理图像的线程已经读走了一帧，此时再put进新的视频帧；否则等待0.01秒。
+
+经过以上修改后，代码可以在arm平台上正常运行。
