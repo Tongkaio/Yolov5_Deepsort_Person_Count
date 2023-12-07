@@ -13,7 +13,7 @@ q = queue.Queue(maxsize=3)  # 用于存放读取每帧的队列
 
 
 def Receive():
-    print("start Reveive")
+    print("start Receive")
     cap = cv2.VideoCapture("your/rtsp/path")  # 填入摄像头rtsp流地址
     ret, frame = cap.read()
     q.put(frame)
