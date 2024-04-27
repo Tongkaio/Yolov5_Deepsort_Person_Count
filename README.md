@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 # 二、运行说明
 
-1. main_modify.py 用于 x86 平台的闸机人员计数
+1. main_x86.py 用于 x86 平台的闸机人员计数
 2. main_on_xavier.py 用于 Xavier (arm) 平台的闸机人员计数
 
 # 三、在 x86 平台构建和运行镜像
