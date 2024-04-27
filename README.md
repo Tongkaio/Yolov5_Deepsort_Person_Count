@@ -105,8 +105,6 @@ detector.py：
 
 下载权重文件[crowdhuman_yolov5m.pt](https://pan.baidu.com/s/1JB2JBQM8_iPq936xAKdQPg?pwd=3qtg) (提取码: 3qtg)，并把该文件放到 weights目录下。
 
-
-
 5、运行代码进行测试：
 
 ```shell
