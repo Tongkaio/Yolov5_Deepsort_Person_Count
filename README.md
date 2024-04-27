@@ -69,8 +69,7 @@ docker run -it \
 --mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix \
 -v [人员计数代码根目录]:/home/yolo_deepsort \
 -p "8888:8888" \
---rm \
-tongkai/yolov5_deepsort:latest \
+tongkai2023/yolov5_deepsort:latest \
 bash
 ```
 参数说明：
@@ -84,12 +83,34 @@ bash
 	- `-e PYTHONUNBUFFERED=1`，解决代码print中文时的某些bug。
 	- `-v [人员计数代码根目录]:/home/yolo_deepsort`：将主机的代码目录挂载到容器内的`/home/yolo_deepsort`下。
 	- `-p "8888:8888"`：指定容器的端口。
-	- `--rm`：此容器退出后会被自动删除。
 
-3、运行代码进行测试：
+3、修改代码
+
+main_x86.py：
+
+```python
+70 # 打开视频
+71 video_name = 'NVR-1_1_Trim.avi'  # 这里填入自己的视频名称
+72 capture = cv2.VideoCapture(os.path.join('./video', video_name))  # 这里填入视频的文件夹位置
+```
+
+detector.py：
+
+```python
+ 61                   if lbl not in ['head']:  # 修改标签，可选person(全身), head(头部)
+ 62                       continue
+```
+
+4、准备权重
+
+下载权重文件[crowdhuman_yolov5m.pt](https://pan.baidu.com/s/1JB2JBQM8_iPq936xAKdQPg?pwd=3qtg) (提取码: 3qtg)，并把该文件放到 weights目录下。
+
+
+
+5、运行代码进行测试：
 
 ```shell
-python main_modify.py
+python main_x86.py
 ```
 
 # 四、Arm 平台的部署说明

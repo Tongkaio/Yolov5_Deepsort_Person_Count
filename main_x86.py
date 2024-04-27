@@ -68,7 +68,7 @@ if __name__ == '__main__':
     detector = Detector()
 
     # 打开视频
-    video_name = 'NVR-1.mp4'
+    video_name = 'NVR-1_1_Trim.avi'
     capture = cv2.VideoCapture(os.path.join('./video', video_name))  # 这里填入视频的本地位置
     # capture = cv2.VideoCapture('/mnt/datasets/datasets/towncentre/TownCentreXVID.avi')
 
