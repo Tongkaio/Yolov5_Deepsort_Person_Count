@@ -1,8 +1,5 @@
-# Yolov5 DeepSORT 实现地铁口闸机计数
+# Yolov5 DeepSORT 实现人员计数
 
-![Pasted image 20230718172020](assets/Pasted-image-20230718172020.png)
-
-> 原仓库链接：https://github.com/dyh/unbox_yolov5_deepsort_counting
 
 # 一、环境配置
 
@@ -131,3 +128,17 @@ def Receive():
 其中主要修改了判断条件，`if frame is not None and q.qsize() < 3` 里的 `q.qsize() < 3`，以确保另一个处理图像的线程已经读走了一帧，此时再put进新的视频帧；否则等待0.01秒。
 
 经过以上修改后，代码可以在arm平台上正常运行。
+
+
+
+# 五、导出ONNX
+
+```bash
+pip install onnx==1.8.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install onnxruntime==1.8.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+export PYTHONPATH="$PWD" && python models/export.py --weights ./weights/crowdhuman_yolov5m.pt --img 640 --batch 1
+```
+
+# 参考
+- https://github.com/dyh/unbox_yolov5_deepsort_counting
