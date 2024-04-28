@@ -1,8 +1,4 @@
-# Yolov5 DeepSORT 实现地铁口闸机计数
-
-![Pasted image 20230718172020](assets/Pasted-image-20230718172020.png)
-
-> 原仓库链接：https://github.com/dyh/unbox_yolov5_deepsort_counting
+# Yolov5 DeepSORT 实现人员计数
 
 # 一、环境配置
 
@@ -25,7 +21,7 @@ pip install -r requirements.txt
 
 # 二、运行说明
 
-1. main_modify.py 用于 x86 平台的闸机人员计数
+1. main_x86.py 用于 x86 平台的闸机人员计数
 2. main_on_xavier.py 用于 Xavier (arm) 平台的闸机人员计数
 
 # 三、在 x86 平台构建和运行镜像
@@ -69,8 +65,7 @@ docker run -it \
 --mount type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix \
 -v [人员计数代码根目录]:/home/yolo_deepsort \
 -p "8888:8888" \
---rm \
-tongkai/yolov5_deepsort:latest \
+tongkai2023/yolov5_deepsort:latest \
 bash
 ```
 参数说明：
@@ -89,7 +84,7 @@ bash
 3、运行代码进行测试：
 
 ```shell
-python main_modify.py
+python main_x86.py
 ```
 
 # 四、Arm 平台的部署说明
@@ -112,3 +107,6 @@ def Receive():
 其中主要修改了判断条件，`if frame is not None and q.qsize() < 3` 里的 `q.qsize() < 3`，以确保另一个处理图像的线程已经读走了一帧，此时再put进新的视频帧；否则等待0.01秒。
 
 经过以上修改后，代码可以在arm平台上正常运行。
+
+# 参考
+> 原仓库链接：https://github.com/dyh/unbox_yolov5_deepsort_counting
