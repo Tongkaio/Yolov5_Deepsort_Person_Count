@@ -20,7 +20,17 @@ CONF_THRESH = 0.1
 IOU_THRESHOLD = 0.4
 
 # load coco labels
-categories = ["person", "head", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+# categories = ["person", "head", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+#               "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
+#               "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
+#               "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
+#               "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
+#               "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
+#               "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
+#               "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
+#               "hair drier", "toothbrush"]
+
+categories = ["person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
               "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
               "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
               "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
@@ -191,7 +201,7 @@ class Detector:
         return y
 
 
-    def post_process(self, output, origin_h, origin_w, image_raw, image_new):
+    def post_process(self, output, origin_h, origin_w):
         """
         description: postprocess the prediction
         param:
@@ -282,5 +292,20 @@ class Detector:
         trt_outputs = host_outputs[0]
 
         # Do postprocess
-        results_trt = self.post_process(trt_outputs, origin_h, origin_w, image_raw, input_image)
+        results_trt = self.post_process(trt_outputs, origin_h, origin_w)
         return results_trt
+
+if __name__ == '__main__':
+    import ctypes
+    PLUGIN_LIBRARY = "weights/libyolov5splugins.so"
+    engine_file_path = "weights/yolov5s.engine"
+    img_path = "video/first_frame.jpg"
+
+    ctypes.CDLL(PLUGIN_LIBRARY)
+    detector = Detector(engine_file_path)
+    img = cv2.imread(img_path)
+
+    img = cv2.resize(img, (800, 512))
+    cv2.imshow('Image', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

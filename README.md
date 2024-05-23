@@ -1,5 +1,6 @@
 # Yolov5 DeepSORT 实现人员计数
 
+> 本项目依赖yolov5-v5.0
 
 # 一、环境配置
 
@@ -140,5 +141,70 @@ pip install onnxruntime==1.8.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
 export PYTHONPATH="$PWD" && python models/export.py --weights ./weights/crowdhuman_yolov5m.pt --img 640 --batch 1
 ```
 
+# 安装tensorRT
+> 参考：https://zhuanlan.zhihu.com/p/679763042
+```bash
+apt-get install wget -y
+wget https://developer.nvidia.com/downloads/compute/machine-learning/tensorrt/secure/8.6.1/tars/TensorRT-8.6.1.6.Linux.x86_64-gnu.cuda-11.8.tar.gz
+
+tar -xzvf TensorRT-8.6.1.6.Linux.x86_64-gnu.cuda-11.8.tar.gz 
+
+
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/TensorRT-8.6.1.6/lib" >> ~/.bashrc
+echo "export C_INCLUDE_PATH=$C_INCLUDE_PATH:/usr/local/TensorRT-8.6.1.6/include" >> ~/.bashrc
+echo "export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/usr/local/TensorRT-8.6.1.6/include" >> ~/.bashrc
+
+source ~/.bashrc
+
+cd TensorRT-8.6.1.6/python/
+pip install tensorrt-8.6.1-cp36-none-linux_x86_64.whl 
+```
+docker拉取的镜像没有cuda？runtime和compiler？见[这篇博客](https://blog.csdn.net/ljp1919/article/details/106209358)。
+
+
+# 生成wts文件、engine文件
+```bash
+python third_party/tensorrtx/yolov5/gen_wts.py -w weights/crowdhuman_yolov5m.pt
+
+cd third_party/tensorrtx/yolov5
+mkdir build && cd build
+cp ../../../../weights/crowdhuman_yolov5m.wts ./
+
+```
+这将生成crowdhuman_yolov5m.wts文件到，weights目录下
+
+注意：crowdhuman_yolov5m 的类别数量是2，修改third_party/tensorrtx/yolov5/yololayer.h下的CLASS_NUM为2
+参考：https://blog.csdn.net/LYiiiiiii/article/details/120955485
+
+yolov5.cpp的文件中，销毁顺序需要更改(Line:250)：
+```cpp
+// Close everything down
+engine->destroy();
+config->destroy();
+builder->destroy();
+```
+参考：https://github.com/NVIDIA/TensorRT/issues/2819
+
+wts -> engine，需要opencv，参考 https://blog.csdn.net/weixin_44286126/article/details/126813864?spm=1001.2014.3001.5502 :
+```bash
+cd {tensorrtx}/yolov5/
+mkdir build
+cd build
+cmake ..
+make
+./yolov5 -s crowdhuman_yolov5m.wts crowdhuman_yolov5m_.engine m
+```
+这将在build目录下生成crowdhuman_yolov5m.engine文件
+
+deepsort模型转engine
+依赖：
+```bash
+apt-get install libeigen3-dev
+ln -s /usr/include/eigen3/Eigen /usr/include/Eigen
+```
+报错与修改：https://blog.csdn.net/lxx191079173/article/details/123511086
 # 参考
 - https://github.com/dyh/unbox_yolov5_deepsort_counting
+- https://github.com/cong/yolov5_deepsort_tensorrt
+- pycuda文档：https://documen.tician.de/pycuda/
+- https://blog.csdn.net/weixin_38705903/article/details/103932179

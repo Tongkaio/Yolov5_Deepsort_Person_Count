@@ -137,8 +137,23 @@ video/NVR-1.mp4
 video/1.mp4
 video/2.mp4
 
-# my_weights
+# weights
+weights/
 weights/crowdhuman_yolov5m.pt
 
-# mydir
+# output
 output_guowang/
+logs/
+
+# third_party
+TensorRT-8.6.1.6/
+opencv-4.5.4/
+
+# engine
+*.engine
+
+# tmp
+run_docker.txt
+video/first_frame.jpg
+video/test.py
+deepsort.onnx

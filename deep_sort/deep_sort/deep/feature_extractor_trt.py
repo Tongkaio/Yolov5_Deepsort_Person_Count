@@ -72,6 +72,8 @@ class TrackerExtractor:
         self.host_outputs = host_outputs
         self.cuda_outputs = cuda_outputs
         self.bindings = bindings
+
+        # Remove the context pushed by `cuda.Device(0).make_context()`
         self.cfx.pop()
 
     def _preprocess(self, im_crops):
@@ -132,11 +134,6 @@ class TrackerExtractor:
         # Remove any context from the top of the context stack, deactivating it.
         self.cfx.pop()
         return np.array(features_trt)
-
-    # def destroy(self):
-    #     # Remove any context from the top of the context stack, deactivating it.
-    #     # here, pop the context pushed in `make_context` action
-    #     self.cfx.pop()
 
 
 if __name__ == '__main__':

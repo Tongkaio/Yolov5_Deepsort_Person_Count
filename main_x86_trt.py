@@ -10,8 +10,12 @@ import cv2
 
 if __name__ == '__main__':
     # TensorRT
+    # yolov5m
     engine_file_path = "./weights/crowdhuman_yolov5m.engine"
     PLUGIN_LIBRARY = "./weights/libmyplugins.so"
+    # yolov5s
+    # engine_file_path = "./weights/yolov5s.engine"
+    # PLUGIN_LIBRARY = "./weights/libyolov5splugins.so"
     ctypes.CDLL(PLUGIN_LIBRARY)
 
     # size
