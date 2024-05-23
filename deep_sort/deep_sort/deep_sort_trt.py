@@ -34,10 +34,6 @@ class DeepSortTRT(object):
         if len(features) == 0:
             return []
         bbox_tlwh = self._xywh_to_tlwh(bbox_xywh)
-        print(f"bbox_tlwh.shape = {bbox_tlwh.shape}")
-        print(f"confidences.shape = {confidences.shape}")
-        print(confidences)
-        print(f"len(features) = {len(features)}")
         detections = [Detection(bbox_tlwh[i], conf, features[i]) for i,conf in enumerate(confidences) if conf>self.min_confidence]
 
         # run on non-maximum supression
@@ -110,13 +106,10 @@ class DeepSortTRT(object):
     def _get_features(self, bbox_xywh, ori_img):
         im_crops = []
         for box in bbox_xywh:
-            print(f"box = {box}")
             x1,y1,x2,y2 = self._xywh_to_xyxy(box)
-            print(f"x1,y1,x2,y2 = {(x1,y1,x2,y2)}")
             im = ori_img[y1:y2,x1:x2]
             im_crops.append(im)
         if im_crops:
-            print("call track_extractor")
             features = self.extractor.track_extractor(im_crops)  # use the trt version Extractor
         else:
             features = np.array([])

@@ -84,20 +84,13 @@ class TrackerExtractor:
         """
         def _resize(im, size):
             im_resize = cv2.resize(im.astype(np.float32)/255., size)
-            print(f"im.shape = {im.shape}, size = {size}")
             return im_resize
         def _normalize(im):
             mean = [0.485, 0.456, 0.406]
             std = [0.229, 0.224, 0.225]
             return (im.astype(np.float32) - np.array(mean)) / np.array(std)
         imgs = []
-        print(f"im_crops = {len(im_crops)}")
-        for im in im_crops:
-            # if im.shape[0] * im.shape[1] < 1000 or im.shape[0] / im.shape[1] > 3 or im.shape[1] / im.shape[0] > 3:
-            #     print(f"crops is too small!!!!")
-            #     continue
-            print(f"im.shape = {im.shape}, size = {self.size}")        
-
+        for im in im_crops:     
             img = _normalize(_resize(im, self.size))
             # img = img.cpu().numpy()
             imgs.append(img)
@@ -117,10 +110,8 @@ class TrackerExtractor:
         cuda_outputs = self.cuda_outputs
         bindings = self.bindings
         # Do image preprocess
-        print(f"len(im_crops) = {len(im_crops)}")
         im_batchs = self._preprocess(im_crops)
         features_trt = []
-        print(f"len(im_batchs) = {len(im_batchs)}")
         for im_batch in im_batchs:
             # Copy input image to host buffer
             np.copyto(host_inputs[0], im_batch.ravel())
@@ -140,7 +131,6 @@ class TrackerExtractor:
             features_trt.append(feature_trt)
         # Remove any context from the top of the context stack, deactivating it.
         self.cfx.pop()
-        print(f"len(features_trt) = {len(features_trt)}")
         return np.array(features_trt)
 
     # def destroy(self):

@@ -207,15 +207,8 @@ class Detector:
         num = int(output[0])
         # Reshape to a two dimentional ndarray
         pred = np.reshape(output[1:], (-1, 6))[:num, :]
-        # to a torch Tensor
-        # pred = torch.Tensor(pred).cuda()
         # Get the boxes
         boxes = pred[:, :4]
-        # Rescale boxes from image_raw.shape to (origin_h, origin_w), image_new is NCHW
-        # print(f"image_new.shape = {image_new.shape}")
-        # print(f"image_new.shape[2:] = {image_new.shape[2:]}")
-        # print(f"(origin_h, origin_w) = {(origin_h, origin_w)}")
-        
         # Get the scores
         scores = pred[:, 4]
         # Get the classid
@@ -227,9 +220,7 @@ class Detector:
         classid = classid[si].tolist()
         # Trandform bbox from [center_x, center_y, w, h] to [x1, y1, x2, y2]
         boxes = self.xywh2xyxy(origin_h, origin_w, boxes)
-        # boxes = scale_coords(image_new.shape[2:], boxes, (origin_h, origin_w)).tolist()  # 待排查
         # Do nms
-        # indices = torchvision.ops.nms(boxes, scores, iou_threshold=IOU_THRESHOLD).cpu()
         indices = cv2.dnn.NMSBoxes(boxes, scores, score_threshold=CONF_THRESH, nms_threshold=IOU_THRESHOLD)
         result_boxes = np.array(boxes)
         result_scores = np.array(scores)
@@ -245,8 +236,6 @@ class Detector:
         #
         results_trt = []
         for i in range(len(result_boxes)):
-            # print(f"result_classid.shape: {result_classid.shape}")
-            # cid = result_classid[i][0]
             cid = result_classid[i]
             label = categories[int(cid)]
             if label not in ['head']:  # only show categorie:'head', (other choices: 'person')
@@ -294,14 +283,4 @@ class Detector:
 
         # Do postprocess
         results_trt = self.post_process(trt_outputs, origin_h, origin_w, image_raw, input_image)
-        # print(f"type(results_trt) = {type(results_trt)}")
-        # print(f"len(results_trt) = {len(results_trt)}")
-        # if len(results_trt) != 0:
-        #     print(results_trt)
-        #     exit()
         return results_trt
-
-
-    # def destroy(self):
-    #     # Remove any context from the top of the context stack, deactivating it.
-    #     self.cfx.pop()
