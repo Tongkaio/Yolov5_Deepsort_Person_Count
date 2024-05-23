@@ -1,3 +1,6 @@
 [submodule "third_party/tensorrtx"]
 	path = third_party/tensorrtx
 	url = https://github.com/wang-xinyu/tensorrtx.git
+[submodule "third_party/deepsort_tensorrt"]
+	path = third_party/deepsort_tensorrt
+	url = https://github.com/GesilaA/deepsort_tensorrt.git
