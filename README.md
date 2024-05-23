@@ -169,7 +169,6 @@ python third_party/tensorrtx/yolov5/gen_wts.py -w weights/crowdhuman_yolov5m.pt
 cd third_party/tensorrtx/yolov5
 mkdir build && cd build
 cp ../../../../weights/crowdhuman_yolov5m.wts ./
-
 ```
 这将生成crowdhuman_yolov5m.wts文件到，weights目录下
 
