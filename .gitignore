@@ -148,6 +148,7 @@ logs/
 # third_party
 TensorRT-8.6.1.6/
 opencv-4.5.4/
+third_party/
 
 # engine
 *.engine
