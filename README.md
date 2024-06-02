@@ -41,7 +41,7 @@ sudo su
 
 Dockerfile在Docker文件夹下，进入该文件夹然后：
 ```shell
-docker build -t tongkai2023/yolov5_deepsort:latest
+docker build -t tongkai2023/yolov5_deepsort:latest .
 ```
 或者从 dockerhub 拉取构建好的镜像：
 ```shell
